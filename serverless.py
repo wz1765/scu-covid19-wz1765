@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 """
-author: Les1ie
+author: Les1ie, HyperMn
 mail: me@les1ie.com
 license: CC BY-NC-SA 3.0
 """
@@ -12,8 +12,8 @@ from datetime import datetime
 
 s = requests.Session()
 
-user = "USERNAME"    # sep账号
-passwd = "PASSWORD"   # sep密码
+user = "USERNAME"    # 账号
+passwd = "PASSWORD"   # 密码
 api_key = ""  # server酱的api，填了可以微信通知打卡结果，不填没影响
 
 
@@ -25,7 +25,7 @@ def login(s: requests.Session, username, password):
         "username": username,
         "password": password
     }
-    r = s.post("https://app.ucas.ac.cn/uc/wap/login/check", data=payload)
+    r = s.post("https://wfw.scu.edu.cn/a_scu/api/sso/check", data=payload)
 
     # print(r.text)
     if r.json().get('m') != "操作成功":
@@ -35,7 +35,7 @@ def login(s: requests.Session, username, password):
 
 
 def get_daily(s: requests.Session):
-    daily = s.get("https://app.ucas.ac.cn/ncov/api/default/daily?xgh=0&app_id=ucas")
+    daily = s.get("https://wfw.scu.edu.cn/ncov/api/default/daily?xgh=0&app_id=scu")
     # info = s.get("https://app.ucas.ac.cn/ncov/api/default/index?xgh=0&app_id=ucas")
     j = daily.json()
     d = j.get('d', None)
@@ -48,31 +48,34 @@ def get_daily(s: requests.Session):
 
 
 def submit(s: requests.Session, old: dict):
-    new_daily = {
-        'realname': old['realname'],
-        'number': old['number'],
-        'szgj_api_info': old['szgj_api_info'],
-        'sfzx': old['sfzx'],
-        'szdd': old['szdd'],
-        'ismoved': old['ismoved'],
-        'tw': old['tw'],
-        'sftjwh': old['sfsfbh'],
-        'sftjhb': old['sftjhb'],
-        'sfcxtz': old['sfcxtz'],
-        'sfjcwhry': old['sfjcwhry'],
-        'sfjchbry': old['sfjchbry'],
-        'sfjcbh': old['sfjcbh'],
-        'sfcyglq': old['sfcyglq'],
-        'sfcxzysx': old['sfcxzysx'],
-        'old_szdd': old['szdd'],
+new_daily = {
+        'realname': old['realname'],    #姓名
+        'number': old['number'],        #学工号
+        'sfzx': old['sfzx'],            #是否在校
+        'ismoved': old['ismoved'],      #？所在地点
+        'tw': old['tw'],                #体温
+        'sftjwh': old['sftjwh'],        #是否途经武汉
+        'sftjhb': old['sftjhb'],        #是否途经湖北
+        'sfcxtz': old['sfcxtz'],        #是否出现体征？
+        'sfjcwhry': old['sfjcwhry'],    #是否接触武汉人员
+        'sfjchbry': old['sfjchbry'],    #是否接触湖北人员
+        'sfjcbh': old['sfjcbh'],        #是否接触病患 ？疑似/确诊人群
+        'sfcyglq': old['sfcyglq'],      #是否处于隔离期？
+        "sfjxhsjc": old['sfjxhsjc'],    #是否进行核酸检查
+        'sfcxzysx': old['sfcxzysx'],    #是否出现值得注意的情况？
+        'szsqsfybl': old['szsqsfybl'],
+        'sfsqhzjkk': old['sfsqhzjkk'],
+        'sfygtjzzfj': old['sfygtjzzfj'],
+        'hsjcjg': old['hsjcjg'],
+        'old_szdd': old['old_szdd'],        #所在地点
+        'sfsfbh': old['sfsfbh'],            #是否？？病患
         'geo_api_info': old['old_city'],
         'old_city': old['old_city'],
         'geo_api_infot': old['geo_api_infot'],
         'date': datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y-%m-%d"),
-        'jcjgqk': old['jcjgqk'],
-        'app_id': 'ucas'}
+        'app_id': 'scu'}
 
-    r = s.post("https://app.ucas.ac.cn/ncov/api/default/save", data=new_daily)
+    r = s.post("https://wfw.scu.edu.cn/ncov/api/default/save", data=new_daily)
     print("提交信息:", new_daily)
     # print(r.text)
     result = r.json()

@@ -1,5 +1,6 @@
 # scu-covid19
 fork from <a href= "https://github.com/IanSmith123/ucas-covid19" > ucas-covid19 </a>
+
 川大疫情防控每日填报助手，用于解决忘记填写微信中身体状况每日打卡的问题。
 
 本人不对因为滥用此程序造成的后果负责，**请在合理且合法的范围内使用本程序**。

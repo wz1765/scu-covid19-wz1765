@@ -9,7 +9,7 @@ fork from <a href= "https://github.com/IanSmith123/ucas-covid19" > ucas-covid19 
 理论上来说本程序适用于**国内大多数高校**的每日打卡，只需要替换代码中的提交网址并完成其他的适配性工作即可，其他学校有需求的同学可以修改本代码，但请遵守`CC BY-NC-SA 3.0` 许可协议。
 
 # 用法
-1. 修改脚本内的sep账号和密码
+1. 修改脚本内的账号和密码
 2. （可选）填写[server酱](http://sc.ftqq.com/3.version)的api，填写之后可以在程序完成打卡之后通知到微信，如果不填写不影响使用
 2. 放到服务器上，修改crontab，设定为每天八点半运行，注意需要修改以下命令的路径为实际路径。
 ```
@@ -35,8 +35,8 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 - 克隆这个仓库到你名下
 - fork的仓库默认禁用了`workflow`，需要手动打开：点击 `actions`选项卡，点击`I understand my workflows, go ahead rand run them`。
 - 在仓库设置里面, 设置 secrets 如下
-  - `SEP_USER_NAME`: 你的 SEP 用户名(邮箱)
-  - `SEP_PASSWD`: 你的 SEP 密码
+  - `SEP_USER_NAME`: 你的账号
+  - `SEP_PASSWD`: 你的密码
   - `API_KEY`: 你的通知 api key (强烈建议设置, 因为不设置这个 api key 你无法及时知晓运行状态)
 
 参考截图设定以上三个secrets，`API_KEY`可选。
@@ -49,7 +49,7 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 1. 登录注册腾讯云
 2. 打开`https://console.cloud.tencent.com/scf/`控制台的云函数页面，任选地区，点击`新建`
 3. 输入函数名称`covid`，运行环境python3.6，创建方式空白函数
-4. 全选然后删除下面cloud studio中正在编辑的`index.py`的文件的全部内容，然后将本项目中`serverless.py`的内容粘贴进去，同时修改自己的sep信息，如果有server酱api的可以填key没有的可以不写
+4. 全选然后删除下面cloud studio中正在编辑的`index.py`的文件的全部内容，然后将本项目中`serverless.py`的内容粘贴进去，同时修改自己的账号信息，如果有server酱api的可以填key没有的可以不写
 5. 点击完成
 6. 点击触发方式，选择添加触发方式，输入定时任务名称daily，触发周期为自定义触发周期， cron表达式 `0 30 8 * * * *`，点击完成
 
@@ -73,4 +73,4 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
 
-Last Updated on 2020-4-21 13:19:59
+Last Updated on 2020-4-21 13:25 by HyperMn

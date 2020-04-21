@@ -1,5 +1,6 @@
-# ucas-covid19
-国科大疫情防控每日填报助手，用于解决忘记填写企业微信中身体状况每日打卡的问题。
+# scu-covid19
+fork from <a href= "https://github.com/IanSmith123/ucas-covid19" > ucas-covid19 </a>
+川大疫情防控每日填报助手，用于解决忘记填写微信中身体状况每日打卡的问题。
 
 本人不对因为滥用此程序造成的后果负责，**请在合理且合法的范围内使用本程序**。
 
@@ -59,6 +60,7 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 只接受PR，不接受需求。
 
 # changelog
+- 2020年4月20日 在ucas-covid的基础上做了scu的适配工作
 - 2020年4月15日 添加了随机等待`10-600`秒之后再进行填报
 - 2020年4月15日 添加了`user-agent`
 - 2020年4月15日 更新了README，添加了设定secrets页面的截图

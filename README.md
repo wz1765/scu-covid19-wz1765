@@ -65,6 +65,7 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 - 2020年4月15日 添加了随机等待`10-600`秒之后再进行填报
 - 2020年4月15日 添加了`user-agent`
 - 2020年4月15日 更新了README，添加了设定secrets页面的截图
+- 2020年7月29日 适配了新添加的几个选项
 
 # 致谢
 - 感谢 [karuboniru](https://github.com/IanSmith123/ucas-covid19/pull/1) 提供的github actions 支持

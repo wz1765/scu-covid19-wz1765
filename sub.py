@@ -54,31 +54,46 @@ def get_daily(s: requests.Session):
 
 def submit(s: requests.Session, old: dict):
     new_daily = {
+        "sfjxhsjc": old['sfjxhsjc'],    #是否进行核酸检查 1
+        'hsjcjg': old['hsjcjg'],        #核算检测结果 2
+        'tw': old['tw'],                #体温 3
+        'sfcxtz': old['sfcxtz'],        #是否出现体征？ 4
+        'sfjcbh': old['sfjcbh'],        #是否接触病患 ？疑似/确诊人群 5
+        'sfcxzysx': old['sfcxzysx'],    #是否出现值得注意的情况？ 6
+        'sfyyjc': old['sfyyjc'], #是否医院检查？ 7
+        'jcjgqr': old['jcjgqr'], #检查结果确认？ 8
+        'address': old['address'], # 9
+        'geo_api_info': my_geo_info, # 10
+        'area': old['area'], # 11
+        'province': old['province'], # 12
+        'city': old['city'], # 13
+        'sfzx': old['sfzx'],            #是否在校 14
+        'sfjcwhry': old['sfjcwhry'],    #是否接触武汉人员 15 
+        'sfjchbry': old['sfjchbry'],    #是否接触湖北人员 16
+        'sfcyglq': old['sfcyglq'],      #是否处于隔离期？ 17
+        'sftjhb': old['sftjhb'],        #是否途经湖北 18
+        'sftjwh': old['sftjwh'],        #是否途经武汉 19
+        'date': datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y%m%d"), # 20
+        'uid': old['uid'],
+        'created': str(int(time())),  # 创建时间
+        'szsqsfybl': old['szsqsfybl'],  # 21
+        'sfsqhzjkk': old['sfsqhzjkk'],  # 22
+        'sfygtjzzfj': old['sfygtjzzfj'],# 23 
+        'ismoved': old['ismoved'],      #？所在地点 24
+        'old_szdd': old['old_szdd'],        #所在地点
+        'sfsfbh': old['sfsfbh'],            #是否？？病患
+    	'szsqsfybl': old['szsqsfybl'],
+    	'sfsqhzjkk': old['szsqsfybl'],
+	    'sfygtjzzfj': old['szsqsfybl'],
+	    'zgfxdq': old['zgfxdq'],
+	    'mjry': old['mjry'],
+	    'csmjry': old['csmjry'],
+        'old_city': old['old_city'],
+        'is_daily': old['is_daily'],
         'realname': old['realname'],    #姓名
         'number': old['number'],        #学工号
-        'sfzx': old['sfzx'],            #是否在校
-        'ismoved': old['ismoved'],      #?所在地点
-        'tw': old['tw'],                #体温
-        'sftjwh': old['sftjwh'],        #是否途经武汉
-        'sftjhb': old['sftjhb'],        #是否途经湖北
-        'sfcxtz': old['sfcxtz'],        #是否出现体征？
-        'sfjcwhry': old['sfjcwhry'],    #是否接触武汉人员
-        'sfjchbry': old['sfjchbry'],    #是否接触湖北人员
-        'sfjcbh': old['sfjcbh'],        #是否接触病患
-        'sfcyglq': old['sfcyglq'],      #是否处于隔离期
-        "sfjxhsjc": old['sfjxhsjc'],    #是否进行核酸检查
-        'sfcxzysx': old['sfcxzysx'],    #是否出现????
-        'szsqsfybl': old['szsqsfybl'],
-        'sfsqhzjkk': old['sfsqhzjkk'],
-        'sfygtjzzfj': old['sfygtjzzfj'],
-        'hsjcjg': old['hsjcjg'],
-        'old_szdd': old['old_szdd'],        #所在地点
-        'sfsfbh': old['sfsfbh'],            #是否??病患
-        'geo_api_info': old['old_city'],
-        'old_city': old['old_city'],
-        'geo_api_infot': old['geo_api_infot'],
-        'date': datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y-%m-%d"),
         'app_id': 'scu'}
+
 
     r = s.post("https://wfw.scu.edu.cn/ncov/api/default/save", data=new_daily)
     print("提交信息:", new_daily)

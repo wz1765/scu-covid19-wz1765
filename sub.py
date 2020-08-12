@@ -63,7 +63,7 @@ def submit(s: requests.Session, old: dict):
         'sfyyjc': old['sfyyjc'], #是否医院检查？ 7
         'jcjgqr': old['jcjgqr'], #检查结果确认？ 8
         'address': old['address'], # 9
-        'geo_api_info': my_geo_info, # 10
+        'geo_api_info': my_geo_info, # 注意，此处my_geo_info是未定义变量，需要手动在https://wfw.scu.edu.cn/ncov/wap/default/index电脑端提交一次，在network里找到提交的信息里对应的geo_api_info信息复制过来
         'area': old['area'], # 11
         'province': old['province'], # 12
         'city': old['city'], # 13
@@ -84,10 +84,10 @@ def submit(s: requests.Session, old: dict):
         'sfsfbh': old['sfsfbh'],            #是否？？病患
     	'szsqsfybl': old['szsqsfybl'],
     	'sfsqhzjkk': old['szsqsfybl'],
-	    'sfygtjzzfj': old['szsqsfybl'],
-	    'zgfxdq': old['zgfxdq'],
-	    'mjry': old['mjry'],
-	    'csmjry': old['csmjry'],
+	'sfygtjzzfj': old['szsqsfybl'],
+	'zgfxdq': old['zgfxdq'],
+	'mjry': old['mjry'],
+	'csmjry': old['csmjry'],
         'old_city': old['old_city'],
         'is_daily': old['is_daily'],
         'realname': old['realname'],    #姓名

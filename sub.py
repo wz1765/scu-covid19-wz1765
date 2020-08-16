@@ -13,7 +13,14 @@ from time import sleep
 from random import randint
 from datetime import datetime
 
+'''
+！！！必看！！！
+进入https://wfw.scu.edu.cn/ncov/wap/default/index即打卡网页，登录后在“所在地点”中获取当前位置信息，
+然后F12，在element里面用ctrl+f搜索geo_api_info，把对应位置的geo_api_info的内容复制到https://www.sojson.com/yasuo.html
+先"去除转义"再"unicode转中文"，把获取的结果复制到下面的my_geo_info的位置。
+'''
 
+my_geo_info = '请阅读上方文字，覆盖此处'
 s = requests.Session()
 header = {"User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh",}
 s.headers.update(header)
@@ -63,7 +70,7 @@ def submit(s: requests.Session, old: dict):
         'sfyyjc': old['sfyyjc'], #是否医院检查？ 7
         'jcjgqr': old['jcjgqr'], #检查结果确认？ 8
         'address': old['address'], # 9
-        'geo_api_info': my_geo_info, # 注意，此处my_geo_info是未定义变量，需要手动在https://wfw.scu.edu.cn/ncov/wap/default/index电脑端提交一次，在network里找到提交的信息里对应的geo_api_info信息复制过来
+        'geo_api_info': my_geo_info, # 注意，此处my_geo_info需要手动更改
         'area': old['area'], # 11
         'province': old['province'], # 12
         'city': old['city'], # 13

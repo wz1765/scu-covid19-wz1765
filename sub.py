@@ -89,9 +89,6 @@ def submit(s: requests.Session, old: dict):
         'ismoved': old['ismoved'],      #？所在地点 24
         'old_szdd': old['old_szdd'],        #所在地点
         'sfsfbh': old['sfsfbh'],            #是否？？病患
-    	'szsqsfybl': old['szsqsfybl'],
-    	'sfsqhzjkk': old['szsqsfybl'],
-	'sfygtjzzfj': old['szsqsfybl'],
 	'zgfxdq': old['zgfxdq'],
 	'mjry': old['mjry'],
 	'csmjry': old['csmjry'],

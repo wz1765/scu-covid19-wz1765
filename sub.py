@@ -1,34 +1,36 @@
+'''
+！！！必看！！！
+进入https://wfw.scu.edu.cn/ncov/wap/default/index即打卡网页，登录后在“所在地点”中获取当前位置信息，
+然后F12，在element里面用ctrl+f搜索geo_api_info，把对应位置的geo_api_info的内容复制到https://www.sojson.com/yasuo.html
+先"去除转义"再"unicode转中文"，把获取的结果复制到下面对应的geo_api_info的位置，此脚本中地址默认为四川大学江安校区。
+'''
+
 # -*- coding: utf-8 -*-
 """
-Modified on Mon Apr 20 21:31:53 2020
+Modified on 20200917
+@author: HyperMn
+"""
 
-@author: Les1ie, HyperMn
-mail: me@les1ie.com, hypermn@163.com
+"""
+author: Les1ie
+mail: me@les1ie.com
 license: CC BY-NC-SA 3.0
 """
 
 import pytz
 import requests
-from time import sleep
+from time import sleep,time
 from random import randint
 from datetime import datetime
 
-'''
-！！！必看！！！
-进入https://wfw.scu.edu.cn/ncov/wap/default/index即打卡网页，登录后在“所在地点”中获取当前位置信息，
-然后F12，在element里面用ctrl+f搜索geo_api_info，把对应位置的geo_api_info的内容复制到https://www.sojson.com/yasuo.html
-先"去除转义"再"unicode转中文"，把获取的结果复制到下面的my_geo_info的位置。
-'''
 
-my_geo_info = '请阅读上方文字，覆盖此处'
 s = requests.Session()
 header = {"User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh",}
 s.headers.update(header)
 
-user = "USERNAME"    # 账号, 13位学号
-passwd = "PASSWORD"   # 密码， SCU统一认证登录密码
-api_key = "API_KEY"  # server酱的api，填了可以微信通知打卡结果，不填没影响
-
+user = "你的账户"    # 账号
+passwd = "你的密码"   # 川大统一认证密码
+api_key = "你的server酱api"  # server酱的api，填了可以微信通知打卡结果，不填没影响
 
 def login(s: requests.Session, username, password):
     #r = s.get(
@@ -49,6 +51,7 @@ def login(s: requests.Session, username, password):
 
 def get_daily(s: requests.Session):
     daily = s.get("https://wfw.scu.edu.cn/ncov/api/default/daily?xgh=0&app_id=scu")
+    # info = s.get("https://app.ucas.ac.cn/ncov/api/default/index?xgh=0&app_id=ucas")
     j = daily.json()
     d = j.get('d', None)
     if d:
@@ -61,8 +64,23 @@ def get_daily(s: requests.Session):
 
 def submit(s: requests.Session, old: dict):
     new_daily = {
+        "qksm": old["qksm"],
+        "remark": old["remark"],
+        "gllx": old["gllx"],
+        "glksrq": old["glksrq"],
+        "jcbhlx": old["jcbhlx"],
+        "jcbhrq": old["jcbhrq"],
+        "bztcyy": old["bztcyy"],
+        "szcs": old["szcs"],
+        "szgj": old["szgj"],
+        "jcjg": old["jcjg"],
+        "jcqzrq": old["jcqzrq"],
+        "sfjcqz": old["sfjcqz"],
         "sfjxhsjc": old['sfjxhsjc'],    #是否进行核酸检查 1
         'hsjcjg': old['hsjcjg'],        #核算检测结果 2
+        "hsjcrq": "2020-09-11",
+        "hsjcdd": "四川大学华西医院",
+        "szxqmc": "江安校区",
         'tw': old['tw'],                #体温 3
         'sfcxtz': old['sfcxtz'],        #是否出现体征？ 4
         'sfjcbh': old['sfjcbh'],        #是否接触病患 ？疑似/确诊人群 5
@@ -70,7 +88,7 @@ def submit(s: requests.Session, old: dict):
         'sfyyjc': old['sfyyjc'], #是否医院检查？ 7
         'jcjgqr': old['jcjgqr'], #检查结果确认？ 8
         'address': old['address'], # 9
-        'geo_api_info': my_geo_info, # 注意，此处my_geo_info需要手动更改
+        'geo_api_info': '{"type":"complete","position":{"Q":30.556680501303,"R":103.991700846355,"lng":103.991701,"lat":30.556681},"location_type":"html5","message":"Get geolocation success.Convert Success.Get address success.","accuracy":40,"isConverted":true,"status":1,"addressComponent":{"citycode":"028","adcode":"510116","businessAreas":[{"name":"白家","id":"510116","location":{"Q":30.562482,"R":104.006821,"lng":104.006821,"lat":30.562482}}],"neighborhoodType":"","neighborhood":"","building":"","buildingType":"","street":"长城路二段","streetNumber":"187号","country":"中国","province":"四川省","city":"成都市","district":"双流区","township":"西航港街道"},"formattedAddress":"四川省成都市双流区西航港街道励行西路四川大学江安校区","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}', # 10
         'area': old['area'], # 11
         'province': old['province'], # 12
         'city': old['city'], # 13
@@ -87,19 +105,13 @@ def submit(s: requests.Session, old: dict):
         'sfsqhzjkk': old['sfsqhzjkk'],  # 22
         'sfygtjzzfj': old['sfygtjzzfj'],# 23 
         'ismoved': old['ismoved'],      #？所在地点 24
-        'old_szdd': old['old_szdd'],        #所在地点
-        'sfsfbh': old['sfsfbh'],            #是否？？病患
-	'zgfxdq': old['zgfxdq'],
-	'mjry': old['mjry'],
-	'csmjry': old['csmjry'],
-        'old_city': old['old_city'],
-        'is_daily': old['is_daily'],
-        'realname': old['realname'],    #姓名
-        'number': old['number'],        #学工号
-        'app_id': 'scu'}
+	    'zgfxdq': old['zgfxdq'],
+	    'mjry': old['mjry'],
+	    'csmjry': old['csmjry'],
+        "created_uid": old["created_uid"]
+        }
 
-
-    r = s.post("https://wfw.scu.edu.cn/ncov/api/default/save", data=new_daily)
+    r = s.post("https://wfw.scu.edu.cn/ncov/wap/default/save", data=new_daily)
     print("提交信息:", new_daily)
     # print(r.text)
     result = r.json()
@@ -123,8 +135,6 @@ def message(key, title, body):
 
 if __name__ == "__main__":
     print(datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y-%m-%d %H:%M:%S %Z"))
-    
-    #手动执行可注释以下三行的延迟填报
     for i in range(randint(10,600),0,-1):
         print("\r等待{}秒后填报".format(i),end='')
         sleep(1)

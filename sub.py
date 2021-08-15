@@ -16,7 +16,7 @@ author: Les1ie
 mail: me@les1ie.com
 license: CC BY-NC-SA 3.0
 """
-
+import os
 import pytz
 import requests
 from time import sleep,time
@@ -28,8 +28,8 @@ s = requests.Session()
 header = {"User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh",}
 s.headers.update(header)
 
-user = "2017141443041"    # 账号
-passwd = "040030"   # 川大统一认证密码
+user = os.environ.get('SEP_USER_NAME', '')  # sep账号
+passwd = os.environ.get('SEP_PASSWD', '')  # sep密码
 api_key = "你的server酱api"  # server酱的api，填了可以微信通知打卡结果，不填没影响
 
 def login(s: requests.Session, username, password):

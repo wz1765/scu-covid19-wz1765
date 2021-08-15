@@ -1,48 +1,26 @@
-'''
-！！！必看！！！
-进入https://wfw.scu.edu.cn/ncov/wap/default/index即打卡网页，登录后在“所在地点”中获取当前位置信息，
-然后F12，在element里面用ctrl+f搜索geo_api_info，把对应位置的geo_api_info的内容复制到https://www.sojson.com/yasuo.html
-先"去除转义"再"unicode转中文"，把获取的结果复制到下面对应的geo_api_info的位置，此脚本中地址默认为四川大学江安校区。
-'''
-
-# -*- coding: utf-8 -*-
+# -*- coding: utf8 -*-
 """
-Modified on 20200917
-@author: HyperMn
-"""
-
-"""
-author: Les1ie
+author: Les1ie, HyperMn, syaoranwe
 mail: me@les1ie.com
 license: CC BY-NC-SA 3.0
 """
-import os
+
 import pytz
 import requests
-from time import sleep,time
-from random import randint
 from datetime import datetime
 
 
-# 开启debug将会输出打卡填报的数据，关闭debug只会输出打卡成功或者失败，如果使用github actions，请务必设置该选项为False
-debug = False
-
-# 忽略网站的证书错误，这很不安全 :(
-verify_cert = True
-
-
 s = requests.Session()
-header = {"User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh",}
-s.headers.update(header)
 
-user = os.environ.get('SEP_USER_NAME', '')  # sep账号
-passwd = os.environ.get('SEP_PASSWD', '')  # sep密码
-api_key = "你的server酱api"  # server酱的api，填了可以微信通知打卡结果，不填没影响
+user = "USERNAME"    # 账号
+passwd = "PASSWORD"   # 密码
+api_key = ""  # server酱的api，填了可以微信通知打卡结果，不填没影响
+
 
 def login(s: requests.Session, username, password):
-    #r = s.get(
-    #    "https://app.ucas.ac.cn/uc/wap/login?redirect=https%3A%2F%2Fapp.ucas.ac.cn%2Fsite%2FapplicationSquare%2Findex%3Fsid%3D2")
-    #print(r.text)
+    # r = s.get(
+    #     "https://app.ucas.ac.cn/uc/wap/login?redirect=https%3A%2F%2Fapp.ucas.ac.cn%2Fsite%2FapplicationSquare%2Findex%3Fsid%3D2")
+    # print(r.text)
     payload = {
         "username": username,
         "password": password
@@ -54,6 +32,8 @@ def login(s: requests.Session, username, password):
         print(r.text)
         print("登录失败")
         exit(1)
+    else:
+        print("登录成功")
 
 
 def get_daily(s: requests.Session):
@@ -62,7 +42,6 @@ def get_daily(s: requests.Session):
     j = daily.json()
     d = j.get('d', None)
     if d:
-
         return daily.json()['d']
     else:
         print("获取昨日信息失败")
@@ -71,54 +50,48 @@ def get_daily(s: requests.Session):
 
 def submit(s: requests.Session, old: dict):
     new_daily = {
-        "qksm": old["qksm"],
-        "remark": old["remark"],
-        "gllx": old["gllx"],
-        "glksrq": old["glksrq"],
-        "jcbhlx": old["jcbhlx"],
-        "jcbhrq": old["jcbhrq"],
-        "bztcyy": old["bztcyy"],
-        "szcs": old["szcs"],
-        "szgj": old["szgj"],
-        "jcjg": old["jcjg"],
-        "jcqzrq": old["jcqzrq"],
-        "sfjcqz": old["sfjcqz"],
-        "sfjxhsjc": old['sfjxhsjc'],    #是否进行核酸检查 1
-        'hsjcjg': old['hsjcjg'],        #核算检测结果 2
-        "hsjcrq": "2020-09-11",
-        "hsjcdd": "四川大学华西医院",
-        "szxqmc": "江安校区",
-        'tw': old['tw'],                #体温 3
-        'sfcxtz': old['sfcxtz'],        #是否出现体征？ 4
-        'sfjcbh': old['sfjcbh'],        #是否接触病患 ？疑似/确诊人群 5
-        'sfcxzysx': old['sfcxzysx'],    #是否出现值得注意的情况？ 6
-        'sfyyjc': old['sfyyjc'], #是否医院检查？ 7
-        'jcjgqr': old['jcjgqr'], #检查结果确认？ 8
-        'address': old['address'], # 9
-        'geo_api_info': '{"type":"complete","position":{"Q":30.629940049914,"R":104.0849476454,"lng":104.084948,"lat":30.62994},"location_type":"html5","message":"Get sdkLocation failed.Get geolocation success.Convert Success.Get address success.","accuracy":40,"isConverted":true,"status":1,"addressComponent":{"citycode":"028","adcode":"510107","businessAreas":[{"name":"小天竺","id":"510107","location":{"Q":30.639354,"R":104.06894199999999,"lng":104.068942,"lat":30.639354}},{"name":"跳伞塔","id":"510107","location":{"Q":30.636149,"R":104.07122400000003,"lng":104.071224,"lat":30.636149}}],"neighborhoodType":"科教文化服务;学校;高等院校","neighborhood":"四川大学","building":"","buildingType":"","street":"科华北路","streetNumber":"131号","country":"中国","province":"四川省","city":"成都市","district":"武侯区","township":"望江路街道"},"formattedAddress":"四川省成都市武侯区望江路街道四川大学四川大学望江校区","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}', # 10
-        'area': old['area'], # 11
-        'province': old['province'], # 12
-        'city': old['city'], # 13
-        'sfzx': old['sfzx'],            #是否在校 14
-        'sfjcwhry': old['sfjcwhry'],    #是否接触武汉人员 15 
-        'sfjchbry': old['sfjchbry'],    #是否接触湖北人员 16
-        'sfcyglq': old['sfcyglq'],      #是否处于隔离期？ 17
-        'sftjhb': old['sftjhb'],        #是否途经湖北 18
-        'sftjwh': old['sftjwh'],        #是否途经武汉 19
-        'date': datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y%m%d"), # 20
-        'uid': old['uid'],
-        'created': str(int(time())),  # 创建时间
-        'szsqsfybl': old['szsqsfybl'],  # 21
-        'sfsqhzjkk': old['sfsqhzjkk'],  # 22
-        'sfygtjzzfj': old['sfygtjzzfj'],# 23 
-        'ismoved': old['ismoved'],      #？所在地点 24
-	    'zgfxdq': old['zgfxdq'],
-	    'mjry': old['mjry'],
-	    'csmjry': old['csmjry'],
-        "created_uid": old["created_uid"]
-        }
+        'realname': old['realname'],    #姓名
+        'number': old['number'],        #学工号
+        'sfzx': old['sfzx'],            #是否在校
+        # 'ismoved': old['ismoved'],      #是否和前一天同城
+        'ismoved': 0,  # 如果前一天位置变化这个值会为1，第二天仍然获取到昨天的1，而事实上位置是没变化的，所以置0
+        'tw': old['tw'],                #体温
+        'sfcxtz': old['sfcxtz'],        #是否出现体征？
+        'sfyyjc':old['sfyyjc'],        #是否到医院检查
+        'jcjgqr':old['jcjgqr'],        #检查结果属于以下哪种情况
+        'jcjg':old['jcjg'],        #观察或诊疗情况&检查结果
+        'sfcyglq':old['sfcyglq'],        #是否处于观察期
+        'gllx':old['gllx'],        #观察场所 即隔离类型
+        'glksrq':old['glksrq'],        #观察（隔离）开始时间
+        'jcbhlx':old['jcbhlx'],        #接触（病患）人群类型
+        'jcbhrq':old['jcbhrq'],        #接触（病患）日期
+        'fxyy':old['fxyy'],        #返校原因
+        # 'bztcyy':old['bztcyy'],        #不和前一天同城原因，由于脚本沿用旧数据，并不会造成位置变化，所以不提交此字段
+        'szgj':old['szgj'],        #所在国家
+        'szcs':old['szcs'],        #所在城市
+        'sfjcbh': old['sfjcbh'],        #是否接触无症状感染/疑似/确诊人群（病患）
+        'sfcyglq': old['sfcyglq'],      #是否处于隔离/观察期？
+        'sfjxhsjc': old['sfjxhsjc'],    #4月8号以后是否进行核酸检测
+        'hsjcrq':old['hsjcrq'],        #核酸检测日期
+        'hsjcdd':old['hsjcdd'],        #核酸检测地点
+        'hsjcjg':old['hsjcjg'],        #核酸检测结果
+        'zgfxdq':old['zgfxdq'],        #今日是否在中高风险地区
+        'mjry':old['mjry'],        #今日是否接触密接人员
+        'csmjry':old['csmjry'],        #近14日内本人/共同居住者是否去过疫情发生场所（市场、单位、小区等）或与场所人员有过密切接触
+        'sfcxzysx': old['sfcxzysx'],    #是否出现值得注意的情况？
+        'qksm':old['qksm'],        #情况说明（值得注意的情况）
+        'remark':old['remark'],        #其他信息（最底端文字）
+        'old_szdd': old['old_szdd'],        #昨天所在地点
+        'geo_api_info': old['old_city'],    #行政区域api结果,采用昨天的数据中的“历史所在城市”
+        'old_city': old['old_city'],        #历史所在城市，沿用
+        'old_sfzx':old['old_sfzx'],        #昨天是否在校，沿用
+        'old_szgj':old['old_szgj'],        #昨天所在国家，沿用
+        'jcjgt':old['jcjgt'],        #昨天的观察或诊疗情况&检查结果
+        'geo_api_infot': old['geo_api_infot'],     #历史行政区域api结果，沿用
+        'date': datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y-%m-%d"),    #打卡日期
+        'app_id': 'scu'}
 
-    r = s.post("https://wfw.scu.edu.cn/ncov/wap/default/save", data=new_daily)
+    r = s.post("https://wfw.scu.edu.cn/ncov/api/default/save", data=new_daily)
     print("提交信息:", new_daily)
     # print(r.text)
     result = r.json()
@@ -139,13 +112,11 @@ def message(key, title, body):
     msg_url = "https://sc.ftqq.com/{}.send?text={}&desp={}".format(key, title, body)
     requests.get(msg_url)
 
-
-if __name__ == "__main__":
+def main_handler(event, context):
+    """
+    腾讯云云函数入口
+    """
     print(datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y-%m-%d %H:%M:%S %Z"))
-    for i in range(randint(10,600),0,-1):
-        print("\r等待{}秒后填报".format(i),end='')
-        sleep(1)
-
     login(s, user, passwd)
     yesterday = get_daily(s)
     submit(s, yesterday)
